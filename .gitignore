@@ -1,0 +1,6 @@
+*.elc
+*~
+*#
+session.*
+.emacs.d/history
+configure-stamp
