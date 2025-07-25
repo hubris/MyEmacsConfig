@@ -5,8 +5,9 @@
  ;; If there is more than one, they won't work right.
  '(c-ts-mode-indent-offset 4 t)
  '(package-selected-packages
-   '(company devdocs helm npm-mode prettier-js rjsx-mode tide
-             treesit-auto typescript-mode web-mode yasnippet))
+   '(company devdocs doom-themes helm magit npm-mode prettier-js
+             rjsx-mode tide treesit-auto typescript-mode web-mode
+             yasnippet))
  '(tab-width 4))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -25,11 +26,30 @@
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-
-(setq package-selected-packages '(npm-mode prettier-js treemacs flycheck typescript-mode lsp-ui js2-mode lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode zenburn-theme json-mode helm-ls-git))
+(setq package-selected-packages '(nerd-icons npm-mode prettier-js treemacs flycheck typescript-mode lsp-ui js2-mode lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode zenburn-theme json-mode helm-ls-git))
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
+
+(use-package doom-themes
+  :ensure t
+  :custom
+  ;; Global settings (defaults)
+  (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+  (doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; for treemacs users
+  (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  :config
+  (load-theme 'doom-one-light t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (nerd-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 (use-package treemacs
   :ensure t
@@ -209,9 +229,9 @@
 (setq web-mode-css-indent-offset 4)
 
 ;; Python (PEP 8 typically wants 4)
-(setq python-indent-offset 4)
 
-;; CSS
+(setq python-indent-offset 4);
+; CSS
 (setq css-indent-offset 4)
 
 ;; JSON
@@ -229,7 +249,7 @@
                   indent-tabs-mode nil)))
 
 
-(load-theme 'leuven t)
+;(load-theme 'leuven t)
 (savehist-mode 1)
 (desktop-save-mode 1)
 (define-key helm-map (kbd "C-r") 'helm-minibuffer-history)
@@ -281,3 +301,21 @@
 (setq whitespace-style '(face tabs trailing tab-mark space-mark))
 (global-display-line-numbers-mode 1)
 (global-whitespace-mode 1)
+
+
+(auto-compression-mode 1)
+
+(global-set-key [f1] 'desktop-save)
+(global-set-key [f7] 'compile)
+(global-set-key "\M-n" 'next-error)
+
+(require 'paren)
+(show-paren-mode 1)
+
+(add-hook 'treemacs-mode-hook (lambda () (text-scale-decrease 1)))
+(add-hook 'treemacs-mode-hook
+          (lambda () (set-window-scroll-bars (selected-window) nil)))
+(add-hook 'treemacs-mode-hook (lambda () (display-line-numbers-mode -1)))
+
+(use-package magit
+  :ensure t)
