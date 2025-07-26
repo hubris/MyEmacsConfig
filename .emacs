@@ -26,7 +26,7 @@
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-(setq package-selected-packages '(nerd-icons npm-mode prettier-js treemacs flycheck typescript-mode lsp-ui js2-mode lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode zenburn-theme json-mode helm-ls-git))
+(setq package-selected-packages '(xterm-color nerd-icons npm-mode prettier-js treemacs flycheck typescript-mode lsp-ui js2-mode lsp-mode yasnippet lsp-treemacs helm-lsp projectile hydra flycheck company avy which-key helm-xref dap-mode zenburn-theme json-mode helm-ls-git))
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
@@ -105,10 +105,10 @@
                    (make "https://github.com/alemuller/tree-sitter-make")
                    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
                    (cmake "https://github.com/uyha/tree-sitter-cmake")
-                   (c "https://github.com/tree-sitter/tree-sitter-c")
+                   (c "https://github.com/tree-sitter/tree-sitter-c" "v0.24.1")
                    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
                    (toml "https://github.com/tree-sitter/tree-sitter-toml")
-                   (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+                   (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.2.3" "tsx/src"))
                    (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
                    (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))
                    (prisma "https://github.com/victorhqc/tree-sitter-prisma")))
@@ -306,8 +306,13 @@
 (auto-compression-mode 1)
 
 (global-set-key [f1] 'desktop-save)
-(global-set-key [f7] 'compile)
+(global-set-key [f7] 'projectile-compile-project)
 (global-set-key "\M-n" 'next-error)
+
+(setq compilation-environment '("TERM=xterm-256color"))
+(defun my/advice-compilation-filter (f proc string)
+  (funcall f proc (xterm-color-filter string)))
+(advice-add 'compilation-filter :around #'my/advice-compilation-filter)
 
 (require 'paren)
 (show-paren-mode 1)
