@@ -4,6 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(c-ts-mode-indent-offset 4 t)
+ '(global-display-line-numbers-mode t)
  '(package-selected-packages
    '(company devdocs doom-themes helm magit npm-mode prettier-js
              rjsx-mode tide treesit-auto typescript-mode web-mode
@@ -14,7 +15,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "Source Code Pro" :foundry "ADBO" :slant normal :weight medium :height 120 :width normal)))))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -298,21 +299,29 @@
 (require 'npm-mode)
 (npm-mode)
 
+;(require 'whitespace)
 (setq whitespace-style '(face tabs trailing tab-mark space-mark))
+;(setq whitespace-display-mappings
+;      '((space-mark 32 [183] [46])))
+(custom-set-faces
+ '(whitespace-space-trailing ((t (:foreground "#CCCCCC" :background nil)))))
+
+;(set-face-attribute 'whitespace-space nil 
+;                    :foreground "#CCCCCC" 
+;                    :background nil)
+;(global-whitespace-mode 1)
+
 (global-display-line-numbers-mode 1)
-(global-whitespace-mode 1)
-
-
 (auto-compression-mode 1)
 
 (global-set-key [f1] 'desktop-save)
 (global-set-key [f7] 'projectile-compile-project)
 (global-set-key "\M-n" 'next-error)
 
-(setq compilation-environment '("TERM=xterm-256color"))
-(defun my/advice-compilation-filter (f proc string)
-  (funcall f proc (xterm-color-filter string)))
-(advice-add 'compilation-filter :around #'my/advice-compilation-filter)
+;(setq compilation-environment '("TERM=xterm-256color"))
+;(defun my/advice-compilation-filter (f proc string)
+;  (funcall f proc (xterm-color-filter string)))
+;(advice-add 'compilation-filter :around #'my/advice-compilation-filter)
 
 (require 'paren)
 (show-paren-mode 1)
@@ -324,3 +333,13 @@
 
 (use-package magit
   :ensure t)
+
+(setq compilation-search-path '(nil "." "../" "../../"))
+(add-hook 'compilation-mode-hook 'compilation-shell-minor-mode)
+
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (ansi-color-apply-on-region compilation-filter-start (point)))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+
