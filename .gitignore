@@ -1,5 +1,6 @@
 *.elc
 *~
+*.swp
 *#
 session.*
 .emacs.d/history
